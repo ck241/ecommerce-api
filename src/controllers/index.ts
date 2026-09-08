@@ -6,6 +6,13 @@ export {
   updateCategory,
 } from "./categories.ts";
 export {
+  createProduct,
+  deleteProduct,
+  getProductById,
+  getProducts,
+  updateProduct,
+} from "./products.ts";
+export {
   createUser,
   deleteUser,
   getUserById,
