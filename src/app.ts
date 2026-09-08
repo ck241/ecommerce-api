@@ -2,7 +2,7 @@ import "dotenv/config";
 import cors from "cors";
 import express, { type ErrorRequestHandler } from "express";
 import { connectDatabase } from "./db/index.ts";
-import { userRouter } from "./routes/index.ts";
+import { categoryRouter, userRouter } from "./routes/index.ts";
 
 const app = express();
 const port = Number(process.env.PORT ?? 3000);
@@ -15,6 +15,7 @@ app.get("/health", (_request, response) => {
 });
 
 app.use("/users", userRouter);
+app.use("/categories", categoryRouter);
 
 const errorHandler: ErrorRequestHandler = (
   error,
