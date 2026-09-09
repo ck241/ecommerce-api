@@ -1,17 +1,11 @@
 import type { RequestHandler } from "express";
 import { Order, Product, User } from "../models/index.ts";
+import { shapeDocument } from "../utils/index.ts";
 
 type OrderItem = {
   productId: string;
   quantity: number;
 };
-
-function shapeOrder(
-  order: InstanceType<typeof Order>,
-): Record<string, unknown> {
-  const { _id, ...orderData } = order.toObject();
-  return { id: _id.toString(), ...orderData };
-}
 
 async function calculateTotal(products: OrderItem[]): Promise<number | null> {
   const productIds = [...new Set(products.map((product) => product.productId))];
@@ -35,7 +29,7 @@ async function calculateTotal(products: OrderItem[]): Promise<number | null> {
 
 export const getOrders: RequestHandler = async (_request, response) => {
   const orders = await Order.find();
-  response.status(200).json(orders.map(shapeOrder));
+  response.status(200).json(orders.map((order) => shapeDocument(order)));
 };
 
 export const createOrder: RequestHandler = async (request, response) => {
@@ -57,7 +51,7 @@ export const createOrder: RequestHandler = async (request, response) => {
   }
 
   const order = await Order.create({ userId, products, total });
-  response.status(201).json(shapeOrder(order));
+  response.status(201).json(shapeDocument(order));
 };
 
 export const getOrderById: RequestHandler = async (request, response) => {
@@ -68,7 +62,7 @@ export const getOrderById: RequestHandler = async (request, response) => {
     return;
   }
 
-  response.status(200).json(shapeOrder(order));
+  response.status(200).json(shapeDocument(order));
 };
 
 export const updateOrder: RequestHandler = async (request, response) => {
@@ -102,7 +96,7 @@ export const updateOrder: RequestHandler = async (request, response) => {
 
   order.set({ userId, products, total });
   await order.save();
-  response.status(200).json(shapeOrder(order));
+  response.status(200).json(shapeDocument(order));
 };
 
 export const deleteOrder: RequestHandler = async (request, response) => {

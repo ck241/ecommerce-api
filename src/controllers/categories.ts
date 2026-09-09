@@ -1,21 +1,17 @@
 import type { RequestHandler } from "express";
 import { Category } from "../models/index.ts";
-
-function shapeCategory(
-  category: InstanceType<typeof Category>,
-): Record<string, unknown> {
-  const { _id, ...categoryData } = category.toObject();
-  return { id: _id.toString(), ...categoryData };
-}
+import { shapeDocument } from "../utils/index.ts";
 
 export const getCategories: RequestHandler = async (_request, response) => {
   const categories = await Category.find();
-  response.status(200).json(categories.map(shapeCategory));
+  response
+    .status(200)
+    .json(categories.map((category) => shapeDocument(category)));
 };
 
 export const createCategory: RequestHandler = async (request, response) => {
   const category = await Category.create(request.body);
-  response.status(201).json(shapeCategory(category));
+  response.status(201).json(shapeDocument(category));
 };
 
 export const getCategoryById: RequestHandler = async (request, response) => {
@@ -26,7 +22,7 @@ export const getCategoryById: RequestHandler = async (request, response) => {
     return;
   }
 
-  response.status(200).json(shapeCategory(category));
+  response.status(200).json(shapeDocument(category));
 };
 
 export const updateCategory: RequestHandler = async (request, response) => {
@@ -41,7 +37,7 @@ export const updateCategory: RequestHandler = async (request, response) => {
     return;
   }
 
-  response.status(200).json(shapeCategory(category));
+  response.status(200).json(shapeDocument(category));
 };
 
 export const deleteCategory: RequestHandler = async (request, response) => {

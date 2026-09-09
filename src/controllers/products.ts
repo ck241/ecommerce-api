@@ -1,12 +1,6 @@
 import type { RequestHandler } from "express";
 import { Category, Product } from "../models/index.ts";
-
-function shapeProduct(
-  product: InstanceType<typeof Product>,
-): Record<string, unknown> {
-  const { _id, ...productData } = product.toObject();
-  return { id: _id.toString(), ...productData };
-}
+import { shapeDocument } from "../utils/index.ts";
 
 async function categoryExists(categoryId: string): Promise<boolean> {
   return (await Category.exists({ _id: categoryId })) !== null;
@@ -16,7 +10,7 @@ export const getProducts: RequestHandler = async (request, response) => {
   const categoryId = request.query.categoryId;
   const filter = typeof categoryId === "string" ? { categoryId } : {};
   const products = await Product.find(filter);
-  response.status(200).json(products.map(shapeProduct));
+  response.status(200).json(products.map((product) => shapeDocument(product)));
 };
 
 export const createProduct: RequestHandler = async (request, response) => {
@@ -26,7 +20,7 @@ export const createProduct: RequestHandler = async (request, response) => {
   }
 
   const product = await Product.create(request.body);
-  response.status(201).json(shapeProduct(product));
+  response.status(201).json(shapeDocument(product));
 };
 
 export const getProductById: RequestHandler = async (request, response) => {
@@ -37,7 +31,7 @@ export const getProductById: RequestHandler = async (request, response) => {
     return;
   }
 
-  response.status(200).json(shapeProduct(product));
+  response.status(200).json(shapeDocument(product));
 };
 
 export const updateProduct: RequestHandler = async (request, response) => {
@@ -60,7 +54,7 @@ export const updateProduct: RequestHandler = async (request, response) => {
     return;
   }
 
-  response.status(200).json(shapeProduct(product));
+  response.status(200).json(shapeDocument(product));
 };
 
 export const deleteProduct: RequestHandler = async (request, response) => {
