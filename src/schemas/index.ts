@@ -4,6 +4,11 @@ export {
   updateCategorySchema,
 } from "./categorySchemas.ts";
 export {
+  createOrderSchema,
+  orderIdParamsSchema,
+  updateOrderSchema,
+} from "./orderSchemas.ts";
+export {
   createProductSchema,
   productIdParamsSchema,
   productQuerySchema,
