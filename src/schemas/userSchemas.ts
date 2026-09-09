@@ -11,6 +11,7 @@ export const createUserSchema = z.object(userFields);
 export const updateUserSchema = z
   .object(userFields)
   .partial()
+  // Reject empty update payloads before they reach the controller.
   .refine((data) => Object.keys(data).length > 0, {
     message: "At least one field must be provided",
   });

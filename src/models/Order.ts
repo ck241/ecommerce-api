@@ -27,6 +27,7 @@ const orderSchema = new Schema(
       type: [orderItemSchema],
       required: true,
       validate: {
+        // Prevent orders without purchasable items at the database layer.
         validator: (products: unknown[]) => products.length > 0,
         message: "An order must contain at least one product",
       },

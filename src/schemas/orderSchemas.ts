@@ -17,6 +17,7 @@ export const createOrderSchema = z.object(orderFields);
 export const updateOrderSchema = z
   .object(orderFields)
   .partial()
+  // Reject empty update payloads before they reach the controller.
   .refine((data) => Object.keys(data).length > 0, {
     message: "At least one field must be provided",
   });

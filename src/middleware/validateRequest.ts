@@ -7,8 +7,15 @@ type RequestSchemas = {
   query?: z.ZodType;
 };
 
+/**
+ * Validates request data against optional Zod schemas before a controller runs.
+ *
+ * @param schemas Schemas for request body, route parameters, and query parameters.
+ * @returns An Express middleware handler that returns a validation error or calls `next`.
+ */
 export function validateRequest(schemas: RequestSchemas): RequestHandler {
   return (request, response, next) => {
+    // Parse each request location independently to return the relevant validation error.
     const results = [
       ["body", schemas.body?.safeParse(request.body)],
       ["params", schemas.params?.safeParse(request.params)],
