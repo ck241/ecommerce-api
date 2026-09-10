@@ -5,14 +5,34 @@ const objectId = {
 };
 
 const idParameter = [{ $ref: "#/components/parameters/id" }];
+
+/**
+ * Creates an OpenAPI response object with a description.
+ *
+ * @param description The human-readable response description.
+ * @returns An OpenAPI response object.
+ */
 const errorResponse = (description: string) => ({ description });
 
+/**
+ * Creates an OpenAPI object schema for request input.
+ *
+ * @param required The names of required properties.
+ * @param properties The OpenAPI property definitions.
+ * @returns An OpenAPI object schema.
+ */
 const inputSchema = (required: string[], properties: object) => ({
   type: "object",
   required,
   properties,
 });
 
+/**
+ * Creates an OpenAPI JSON request body referencing a component schema.
+ *
+ * @param schema The name of the component schema.
+ * @returns A required JSON request body definition.
+ */
 const requestBody = (schema: string) => ({
   required: true,
   content: {
