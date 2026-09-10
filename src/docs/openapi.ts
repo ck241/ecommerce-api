@@ -1,0 +1,267 @@
+const objectId = {
+  type: "string",
+  pattern: "^[a-fA-F0-9]{24}$",
+  example: "507f1f77bcf86cd799439011",
+};
+
+const idParameter = [{ $ref: "#/components/parameters/id" }];
+const errorResponse = (description: string) => ({ description });
+
+const inputSchema = (required: string[], properties: object) => ({
+  type: "object",
+  required,
+  properties,
+});
+
+const requestBody = (schema: string) => ({
+  required: true,
+  content: {
+    "application/json": { schema: { $ref: `#/components/schemas/${schema}` } },
+  },
+});
+
+/** Defines the OpenAPI document rendered by Swagger UI. */
+export const swaggerDocument = {
+  openapi: "3.0.0",
+  info: {
+    title: "eCommerce API",
+    version: "1.0.0",
+    description: "API for users, categories, products and orders.",
+  },
+  servers: [{ url: "http://localhost:3001" }],
+  components: {
+    parameters: {
+      id: {
+        name: "id",
+        in: "path",
+        required: true,
+        schema: objectId,
+      },
+    },
+    schemas: {
+      UserInput: inputSchema(["name", "email", "password"], {
+        name: { type: "string", example: "Test" },
+        email: { type: "string", format: "email", example: "test@example.com" },
+        password: { type: "string", format: "password", example: "secret123" },
+      }),
+      CategoryInput: inputSchema(["name"], {
+        name: { type: "string", example: "Electronics" },
+      }),
+      ProductInput: inputSchema(
+        ["name", "description", "price", "categoryId"],
+        {
+          name: { type: "string", example: "Keyboard" },
+          description: { type: "string", example: "Mechanical keyboard" },
+          price: { type: "number", minimum: 0, example: 99.99 },
+          categoryId: objectId,
+        },
+      ),
+      OrderInput: inputSchema(["userId", "products"], {
+        userId: objectId,
+        products: {
+          type: "array",
+          minItems: 1,
+          items: inputSchema(["productId", "quantity"], {
+            productId: {
+              ...objectId,
+              example: "507f1f77bcf86cd799439012",
+            },
+            quantity: { type: "integer", minimum: 1, example: 2 },
+          }),
+        },
+      }),
+    },
+  },
+  paths: {
+    "/health": {
+      get: {
+        summary: "Get service health",
+        responses: { 200: { description: "Service is available" } },
+      },
+    },
+    "/users": {
+      get: {
+        summary: "List users",
+        responses: { 200: { description: "User list" } },
+      },
+      post: {
+        summary: "Create user",
+        requestBody: requestBody("UserInput"),
+        responses: {
+          201: { description: "User created" },
+          400: errorResponse("Invalid user data"),
+          409: errorResponse("Email already exists"),
+        },
+      },
+    },
+    "/users/{id}": {
+      get: {
+        summary: "Get user",
+        parameters: idParameter,
+        responses: {
+          200: { description: "User found" },
+          404: errorResponse("User not found"),
+        },
+      },
+      put: {
+        summary: "Update user",
+        parameters: idParameter,
+        requestBody: requestBody("UserInput"),
+        responses: {
+          200: { description: "User updated" },
+          400: errorResponse("Invalid user data"),
+          404: errorResponse("User not found"),
+          409: errorResponse("Email already exists"),
+        },
+      },
+      delete: {
+        summary: "Delete user",
+        parameters: idParameter,
+        responses: {
+          204: { description: "User deleted" },
+          404: errorResponse("User not found"),
+        },
+      },
+    },
+    "/categories": {
+      get: {
+        summary: "List categories",
+        responses: { 200: { description: "Category list" } },
+      },
+      post: {
+        summary: "Create category",
+        requestBody: requestBody("CategoryInput"),
+        responses: {
+          201: { description: "Category created" },
+          400: errorResponse("Invalid category data"),
+        },
+      },
+    },
+    "/categories/{id}": {
+      get: {
+        summary: "Get category",
+        parameters: idParameter,
+        responses: {
+          200: { description: "Category found" },
+          404: errorResponse("Category not found"),
+        },
+      },
+      put: {
+        summary: "Update category",
+        parameters: idParameter,
+        requestBody: requestBody("CategoryInput"),
+        responses: {
+          200: { description: "Category updated" },
+          400: errorResponse("Invalid category data"),
+          404: errorResponse("Category not found"),
+        },
+      },
+      delete: {
+        summary: "Delete category",
+        parameters: idParameter,
+        responses: {
+          204: { description: "Category deleted" },
+          404: errorResponse("Category not found"),
+        },
+      },
+    },
+    "/products": {
+      get: {
+        summary: "List products",
+        parameters: [
+          {
+            name: "categoryId",
+            in: "query",
+            schema: objectId,
+            description: "Filter by category",
+          },
+        ],
+        responses: {
+          200: { description: "Product list" },
+          400: errorResponse("Invalid category ID"),
+        },
+      },
+      post: {
+        summary: "Create product",
+        requestBody: requestBody("ProductInput"),
+        responses: {
+          201: { description: "Product created" },
+          400: errorResponse("Invalid product data or category does not exist"),
+        },
+      },
+    },
+    "/products/{id}": {
+      get: {
+        summary: "Get product",
+        parameters: idParameter,
+        responses: {
+          200: { description: "Product found" },
+          404: errorResponse("Product not found"),
+        },
+      },
+      put: {
+        summary: "Update product",
+        parameters: idParameter,
+        requestBody: requestBody("ProductInput"),
+        responses: {
+          200: { description: "Product updated" },
+          400: errorResponse("Invalid product data or category does not exist"),
+          404: errorResponse("Product not found"),
+        },
+      },
+      delete: {
+        summary: "Delete product",
+        parameters: idParameter,
+        responses: {
+          204: { description: "Product deleted" },
+          404: errorResponse("Product not found"),
+        },
+      },
+    },
+    "/orders": {
+      get: {
+        summary: "List orders",
+        responses: { 200: { description: "Order list" } },
+      },
+      post: {
+        summary: "Create order",
+        description: "The server calculates total from current product prices.",
+        requestBody: requestBody("OrderInput"),
+        responses: {
+          201: { description: "Order created" },
+          400: errorResponse("Invalid order data, user, or product"),
+        },
+      },
+    },
+    "/orders/{id}": {
+      get: {
+        summary: "Get order",
+        parameters: idParameter,
+        responses: {
+          200: { description: "Order found" },
+          404: errorResponse("Order not found"),
+        },
+      },
+      put: {
+        summary: "Update order",
+        description:
+          "The server recalculates total from current product prices.",
+        parameters: idParameter,
+        requestBody: requestBody("OrderInput"),
+        responses: {
+          200: { description: "Order updated" },
+          400: errorResponse("Invalid order data, user, or product"),
+          404: errorResponse("Order not found"),
+        },
+      },
+      delete: {
+        summary: "Delete order",
+        parameters: idParameter,
+        responses: {
+          204: { description: "Order deleted" },
+          404: errorResponse("Order not found"),
+        },
+      },
+    },
+  },
+};
