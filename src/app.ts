@@ -1,7 +1,9 @@
 import "dotenv/config";
 import cors from "cors";
 import express, { type ErrorRequestHandler } from "express";
+import swaggerUi from "swagger-ui-express";
 import { connectDatabase } from "./db/index.ts";
+import { swaggerDocument } from "./docs/openapi.ts";
 import {
   categoryRouter,
   orderRouter,
@@ -10,7 +12,7 @@ import {
 } from "./routes/index.ts";
 
 const app = express();
-const port = Number(process.env.PORT ?? 3000);
+const port = Number(process.env.PORT ?? 3001);
 
 app.use(cors());
 app.use(express.json());
@@ -26,6 +28,7 @@ app.get("/health", (_request, response) => {
   response.status(200).json({ status: "ok" });
 });
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/users", userRouter);
 app.use("/categories", categoryRouter);
 app.use("/products", productRouter);
