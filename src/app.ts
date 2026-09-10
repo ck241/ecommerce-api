@@ -34,7 +34,15 @@ app.use("/categories", categoryRouter);
 app.use("/products", productRouter);
 app.use("/orders", orderRouter);
 
-// Convert expected database conflicts and unexpected errors into consistent JSON responses.
+/**
+ * Converts database conflicts and unexpected errors into consistent JSON responses.
+ *
+ * @param error The error raised by a preceding request handler.
+ * @param _request The incoming Express request.
+ * @param response The Express response used to return the error.
+ * @param _next The next Express middleware function.
+ * @returns Nothing after sending an error response.
+ */
 const errorHandler: ErrorRequestHandler = (
   error,
   _request,
