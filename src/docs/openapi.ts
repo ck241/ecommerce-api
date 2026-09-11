@@ -49,6 +49,13 @@ export const swaggerDocument = {
     description: "API for users, categories, products and orders.",
   },
   servers: [{ url: "http://localhost:3001" }],
+  tags: [
+    { name: "Status", description: "Service availability endpoints." },
+    { name: "Users", description: "User management endpoints." },
+    { name: "Categories", description: "Product category endpoints." },
+    { name: "Products", description: "Product management endpoints." },
+    { name: "Orders", description: "Order management endpoints." },
+  ],
   components: {
     parameters: {
       id: {
@@ -95,16 +102,19 @@ export const swaggerDocument = {
   paths: {
     "/health": {
       get: {
+        tags: ["Status"],
         summary: "Get service health",
         responses: { 200: { description: "Service is available" } },
       },
     },
     "/users": {
       get: {
+        tags: ["Users"],
         summary: "List users",
         responses: { 200: { description: "User list" } },
       },
       post: {
+        tags: ["Users"],
         summary: "Create user",
         requestBody: requestBody("UserInput"),
         responses: {
@@ -116,6 +126,7 @@ export const swaggerDocument = {
     },
     "/users/{id}": {
       get: {
+        tags: ["Users"],
         summary: "Get user",
         parameters: idParameter,
         responses: {
@@ -124,6 +135,7 @@ export const swaggerDocument = {
         },
       },
       put: {
+        tags: ["Users"],
         summary: "Update user",
         parameters: idParameter,
         requestBody: requestBody("UserInput"),
@@ -135,6 +147,7 @@ export const swaggerDocument = {
         },
       },
       delete: {
+        tags: ["Users"],
         summary: "Delete user",
         parameters: idParameter,
         responses: {
@@ -145,10 +158,12 @@ export const swaggerDocument = {
     },
     "/categories": {
       get: {
+        tags: ["Categories"],
         summary: "List categories",
         responses: { 200: { description: "Category list" } },
       },
       post: {
+        tags: ["Categories"],
         summary: "Create category",
         requestBody: requestBody("CategoryInput"),
         responses: {
@@ -159,6 +174,7 @@ export const swaggerDocument = {
     },
     "/categories/{id}": {
       get: {
+        tags: ["Categories"],
         summary: "Get category",
         parameters: idParameter,
         responses: {
@@ -167,6 +183,7 @@ export const swaggerDocument = {
         },
       },
       put: {
+        tags: ["Categories"],
         summary: "Update category",
         parameters: idParameter,
         requestBody: requestBody("CategoryInput"),
@@ -177,6 +194,7 @@ export const swaggerDocument = {
         },
       },
       delete: {
+        tags: ["Categories"],
         summary: "Delete category",
         parameters: idParameter,
         responses: {
@@ -187,6 +205,7 @@ export const swaggerDocument = {
     },
     "/products": {
       get: {
+        tags: ["Products"],
         summary: "List products",
         parameters: [
           {
@@ -202,6 +221,7 @@ export const swaggerDocument = {
         },
       },
       post: {
+        tags: ["Products"],
         summary: "Create product",
         requestBody: requestBody("ProductInput"),
         responses: {
@@ -212,6 +232,7 @@ export const swaggerDocument = {
     },
     "/products/{id}": {
       get: {
+        tags: ["Products"],
         summary: "Get product",
         parameters: idParameter,
         responses: {
@@ -220,6 +241,7 @@ export const swaggerDocument = {
         },
       },
       put: {
+        tags: ["Products"],
         summary: "Update product",
         parameters: idParameter,
         requestBody: requestBody("ProductInput"),
@@ -230,6 +252,7 @@ export const swaggerDocument = {
         },
       },
       delete: {
+        tags: ["Products"],
         summary: "Delete product",
         parameters: idParameter,
         responses: {
@@ -240,10 +263,12 @@ export const swaggerDocument = {
     },
     "/orders": {
       get: {
+        tags: ["Orders"],
         summary: "List orders",
         responses: { 200: { description: "Order list" } },
       },
       post: {
+        tags: ["Orders"],
         summary: "Create order",
         description: "The server calculates total from current product prices.",
         requestBody: requestBody("OrderInput"),
@@ -255,6 +280,7 @@ export const swaggerDocument = {
     },
     "/orders/{id}": {
       get: {
+        tags: ["Orders"],
         summary: "Get order",
         parameters: idParameter,
         responses: {
@@ -263,6 +289,7 @@ export const swaggerDocument = {
         },
       },
       put: {
+        tags: ["Orders"],
         summary: "Update order",
         description:
           "The server recalculates total from current product prices.",
@@ -275,6 +302,7 @@ export const swaggerDocument = {
         },
       },
       delete: {
+        tags: ["Orders"],
         summary: "Delete order",
         parameters: idParameter,
         responses: {
