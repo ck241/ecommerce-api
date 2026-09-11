@@ -72,7 +72,7 @@ export const updateCategory: RequestHandler = async (request, response) => {
  * Deletes a category by ID.
  *
  * @param request The Express request containing a validated category ID.
- * @param response The Express response used to return a no-content or not-found response.
+ * @param response The Express response used to return a success or not-found response.
  * @returns A promise fulfilled after the response is sent.
  */
 export const deleteCategory: RequestHandler = async (request, response) => {
@@ -83,5 +83,5 @@ export const deleteCategory: RequestHandler = async (request, response) => {
     return;
   }
 
-  response.status(204).send();
+  response.status(200).json({ message: "Category deleted successfully" });
 };
