@@ -151,7 +151,7 @@ export const swaggerDocument = {
         summary: "Delete user",
         parameters: idParameter,
         responses: {
-          204: { description: "User deleted" },
+          200: { description: "User deleted successfully" },
           404: errorResponse("User not found"),
         },
       },
@@ -198,7 +198,7 @@ export const swaggerDocument = {
         summary: "Delete category",
         parameters: idParameter,
         responses: {
-          204: { description: "Category deleted" },
+          200: { description: "Category deleted successfully" },
           404: errorResponse("Category not found"),
         },
       },
@@ -256,7 +256,7 @@ export const swaggerDocument = {
         summary: "Delete product",
         parameters: idParameter,
         responses: {
-          204: { description: "Product deleted" },
+          200: { description: "Product deleted successfully" },
           404: errorResponse("Product not found"),
         },
       },
@@ -306,7 +306,7 @@ export const swaggerDocument = {
         summary: "Delete order",
         parameters: idParameter,
         responses: {
-          204: { description: "Order deleted" },
+          200: { description: "Order deleted successfully" },
           404: errorResponse("Order not found"),
         },
       },
