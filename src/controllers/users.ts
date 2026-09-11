@@ -69,7 +69,7 @@ export const updateUser: RequestHandler = async (request, response) => {
  * Deletes a user by ID.
  *
  * @param request The Express request containing a validated user ID.
- * @param response The Express response used to return a no-content or not-found response.
+ * @param response The Express response used to return a success or not-found response.
  * @returns A promise fulfilled after the response is sent.
  */
 export const deleteUser: RequestHandler = async (request, response) => {
@@ -80,5 +80,5 @@ export const deleteUser: RequestHandler = async (request, response) => {
     return;
   }
 
-  response.status(204).send();
+  response.status(200).json({ message: "User deleted successfully" });
 };

@@ -139,7 +139,7 @@ export const updateOrder: RequestHandler = async (request, response) => {
  * Deletes an order by ID.
  *
  * @param request The Express request containing a validated order ID.
- * @param response The Express response used to return a no-content or not-found response.
+ * @param response The Express response used to return a success or not-found response.
  * @returns A promise fulfilled after the response is sent.
  */
 export const deleteOrder: RequestHandler = async (request, response) => {
@@ -150,5 +150,5 @@ export const deleteOrder: RequestHandler = async (request, response) => {
     return;
   }
 
-  response.status(204).send();
+  response.status(200).json({ message: "Order deleted successfully" });
 };
